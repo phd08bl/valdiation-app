@@ -148,9 +148,20 @@ def parse_pdf_with_docling(
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
     # ---- docling import (v2.75.0) ----
-    from docling.document_converter import DocumentConverter
+    #from docling.document_converter import DocumentConverter
 
-    converter = DocumentConverter()
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.document_converter import DocumentConverter, PdfFormatOption
+
+    pdf_options = PdfPipelineOptions(do_ocr=False)
+
+    #converter = DocumentConverter()
+
+    converter = DocumentConverter(format_options={
+        InputFormat.PDF: PdfFormatOption(pipeline_options=pdf_options)
+    }
+)
     result = converter.convert(pdf_path)
     doc = getattr(result, "document", None)
     if doc is None:
